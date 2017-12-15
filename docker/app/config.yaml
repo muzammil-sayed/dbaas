@@ -1,0 +1,156 @@
+#https://mako.phx1.jivehosted.com/api/v1beta1/services/data-dbaas/deployments/ms-integ?detail=true
+#https://mako.phx1.jivehosted.com/api/v1beta1/services/data-dbaas?details=true
+#https://data-dbaas.ms-integ.svc.jivehosted.com/apidocs
+#https://data-dbaas.ms-integ.svc.jivehosted.com/
+
+server:
+    maxThreads: 1024
+    minThreads: 8
+    applicationConnectors:
+      - type: http
+        port: 8080
+      - type: mako-https
+        supportedCipherSuites:
+            - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+            - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+            - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256
+            - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+            - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384
+            - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+            # deprecated cyphers for clients' backward compatibility
+            - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+            - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+            - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+            - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
+
+logging:
+    level: INFO
+    #Example of how you can override logging level for individual classes
+    loggers:
+        "com.jivesoftware.data.impl": DEBUG
+    #    "org.apache.http.wire": DEBUG
+
+instanceIdentifierPrefix: ${AWS_RESOURCE_NAMESPACE:-data-dbaas-local-dev}
+awsAccountNumber: "${MAKO_AWS_ACCOUNT}"
+awsRegion: ${MAKO_AWS_REGION:-us-east-1}
+managedServiceTag: ${MAKO_SERVICE_ID:-data-dbaas}
+jiveServiceTag: ${MAKO_SERVICE_ID:-dbaas-local}
+serviceComponentTag: ${MAKO_SERVICE_ID:-dbaas-local}
+hardDeleteDelay: 900000
+sharedInstanceDeployColor: ${DEPLOY_COLOR:-black}  ## Choose between red or black
+domainDetails:
+  domainName: ${MAKO_SERVICE_DOMAIN_NAME:-localhost:8080}
+  protocol: ${HTTP:-https://}
+creationQueue:
+  queueName:  ${AWS_RESOURCE_NAMESPACE:-local}-database-create-request-processor
+  queuePollFrequencySeconds: 5
+deletionQueue:
+  queueName: ${AWS_RESOURCE_NAMESPACE:-local}-database-delete-request-processor
+  queuePollFrequencySeconds: 30
+enhancedMetricsTiming: 60
+metricsPolling: 60
+makoEnvironment: ${MAKO_ENVIRONMENT:-local-dev}
+## the instanceId has to match with the instances.yaml secret
+instanceTemplate:
+  allocatedStorage: ${DEFAULT_TEMPLATE_STORAGE:-100}
+  dbInstanceClass: ${SHARED_DB_CLASS:-db.m4.large}
+  engine: postgres
+  multiAZ: ${DEFAULT_MULTI_AZ:-false}
+  publiclyAccessible: ${DEFAULT_PUBLICLY_ACCESIBLE:-true}
+  subnetGroup: ${DEFAULT_SUBNET_GROUP:-}
+  securityGroup: ${DEFAULT_SECURITY_GROUP:-}
+  engineVersion: 9.5.2
+  port: 5432
+  masterUser: postgres
+  dbName: postgres
+defaultInstances: ${DEFAULT_INSTANCE_NAMES:-[default1, default2]}
+defaultDBName: postgres
+databaseDaoConfiguration:
+    tableName: ${AWS_RESOURCE_NAMESPACE:-data-dbaas-local-dev}-databases
+    readUnits: 5
+    writeUnits: 5
+cloneConfiguration:
+  command: "${DUMP_FILE_DIR:-/}app/cloneschema.sh ${source_user} ${source_password} ${source_host} ${source_port} ${source_schema} ${target_user} ${target_password} ${target_host} ${target_port} ${target_schema}"
+  executionTimeout: 300000
+passwordFile: ${PASSWORD_FILE_DIR:-/secrets/data-dbaas-instances}/instances.yaml
+tokenFile: ${TOKEN_FILE_DIR:-/secrets/data-dbaas-auth-token}/token
+aesFile: ${AES_FILE_DIR:-/secrets/data-dbaas-aes}/aes.yaml
+instanceTypes:
+  - instanceClass: t2.micro
+    totalRam: 1
+    totalCores: 1
+    prodApproved: false
+    encryptedAvailable: false
+    multiAZAvailable: false
+  - instanceClass: t2.small
+    totalRam: 2
+    totalCores: 1
+    prodApproved: false
+    encryptedAvailable: false
+    multiAZAvailable: false
+  - instanceClass: t2.medium
+    totalRam: 4
+    totalCores: 2
+    prodApproved: false
+    encryptedAvailable: false
+    multiAZAvailable: false
+  - instanceClass: m4.large
+    totalRam: 8
+    totalCores: 2
+    prodApproved: true
+    encryptedAvailable: true
+    multiAZAvailable: true
+  - instanceClass: m4.xlarge
+    totalRam: 16
+    totalCores: 4
+    prodApproved: true
+    encryptedAvailable: true
+    multiAZAvailable: true
+  - instanceClass: m4.2xlarge
+    totalRam: 32
+    totalCores: 8
+    prodApproved: true
+    encryptedAvailable: true
+    multiAZAvailable: true
+  - instanceClass: m4.4xlarge
+    totalRam: 64
+    totalCores: 16
+    prodApproved: true
+    encryptedAvailable: true
+    multiAZAvailable: true
+  - instanceClass: m4.10xlarge
+    totalRam: 160
+    totalCores: 40
+    prodApproved: true
+    encryptedAvailable: true
+    multiAZAvailable: true
+  - instanceClass: r3.large
+    totalRam: 15
+    totalCores: 2
+    prodApproved: true
+    encryptedAvailable: true
+    multiAZAvailable: true
+  - instanceClass: r3.xlarge
+    totalRam: 30
+    totalCores: 4
+    prodApproved: true
+    encryptedAvailable: true
+    multiAZAvailable: true
+  - instanceClass: r3.2xlarge
+    totalRam: 61
+    totalCores: 8
+    prodApproved: true
+    encryptedAvailable: true
+    multiAZAvailable: true
+  - instanceClass: r3.4xlarge
+    totalRam: 122
+    totalCores: 16
+    prodApproved: true
+    encryptedAvailable: true
+    multiAZAvailable: true
+  - instanceClass: r3.8xlarge
+    totalRam: 244
+    totalCores: 32
+    prodApproved: true
+    encryptedAvailable: true
+    multiAZAvailable: true

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+NAME="template"
+IMAGE="docker.phx1.jivehosted.com/mako/template"
+TAG="latest"
+set -x
+
+# stop and destroy if already running
+docker stop ${NAME} > /dev/null 2>&1
+docker rm ${NAME} > /dev/null 2>&1
+
+# run in the foreground and remove the container after we're done
+docker run --rm=true -it \
+    -p 8080:8080 -p 8081:8081 \
+    --name ${NAME} \
+    ${IMAGE}:${TAG} \
+    ${@}

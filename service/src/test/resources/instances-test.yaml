@@ -1,0 +1,11 @@
+## the instanceId must match the values in the service spec config.yaml
+instances:
+  - instanceId: test1
+    username: postgres1
+    password: password1
+  - instanceId: test2
+    username: postgres2
+    password: password2
+  - instanceId: test3
+    username: postgres3
+    password: password3

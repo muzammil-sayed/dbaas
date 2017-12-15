@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+IMAGE="docker.phx1.jivehosted.com/mako/template"
+TAG="latest"
+
+cd $(dirname ${BASH_SOURCE[0]})
+pushd ..
+mvn -DskipTests --also-make --projects :service,:docker install
+popd
+
+docker build -t ${IMAGE}:${TAG} .
